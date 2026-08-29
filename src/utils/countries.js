@@ -8,6 +8,7 @@ const countries = [
   "Azerbaijan",
   "Bahamas",
   "Bahrain",
+  "Bangladesh",
   "Belarus",
   "Belgium",
   "Bhutan",
