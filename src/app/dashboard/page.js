@@ -31,6 +31,7 @@ import {
   ArrowRight,
   Search,
   Eye,
+  EyeOff,
   Download,
   Info,
   Trash2,
@@ -88,6 +89,7 @@ export default function AdminDashboard() {
   const [adminPassword, setAdminPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [isSendingReply, setIsSendingReply] = useState(false);
   const [isClearingNotifs, setIsClearingNotifs] = useState(false);
   const [processingId, setProcessingId] = useState(null);
@@ -885,16 +887,25 @@ export default function AdminDashboard() {
 
             <div>
               <label className="block text-xs font-semibold text-slate-400 mb-1">
-                পাসওয়ার্ড *
+                পাসওয়ার্ড *
               </label>
-              <input
-                type="password"
-                required
-                placeholder="password"
-                value={adminPassword}
-                onChange={(e) => setAdminPassword(e.target.value)}
-                className="w-full px-4 py-2.5 text-xs bg-slate-950 border border-slate-700 rounded-xl focus:outline-none focus:border-teal-500 text-white"
-              />
+              <div className="relative">
+                <input
+                  type={showAdminPassword ? 'text' : 'password'}
+                  required
+                  placeholder="password"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  className="w-full px-4 py-2.5 text-xs bg-slate-950 border border-slate-700 rounded-xl focus:outline-none focus:border-teal-500 text-white pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowAdminPassword(!showAdminPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200"
+                >
+                  {showAdminPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
 
             <button
