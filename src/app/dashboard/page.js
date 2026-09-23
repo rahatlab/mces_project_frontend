@@ -52,6 +52,7 @@ import {
   AlertTriangle,
   Clock,
   Upload,
+  KeyRound,
 } from "lucide-react";
 import { api, API_BASE, getImageUrl } from "../../hooks/useApi";
 import useStore from "../../store/useStore";
@@ -102,6 +103,15 @@ export default function AdminDashboard() {
   const [isSubmittingPassport, setIsSubmittingPassport] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showChatList, setShowChatList] = useState(false);
+
+  // Change Password states
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPasswordState, setShowNewPasswordState] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   // Search passport state
   const [passportSearch, setPassportSearch] = useState("");
@@ -770,6 +780,47 @@ export default function AdminDashboard() {
     } catch (e) {}
   };
 
+  // Handle Change Password
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    
+    if (newPassword !== confirmNewPassword) {
+      showToast('error', 'নতুন পাসওয়ার্ড মিলছে না!');
+      return;
+    }
+
+    if (newPassword.length < 4) {
+      showToast('error', 'পাসওয়ার্ড কমপক্ষে ৪ অক্ষর হতে হবে!');
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      const response = await fetch(`${API_BASE}/auth/change-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ oldPassword, newPassword })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'পাসওয়ার্ড পরিবর্তন করা যায়নি।');
+      }
+
+      showToast('success', 'পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে!');
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+    } catch (err) {
+      showToast('error', err.message || 'পাসওয়ার্ড পরিবর্তন করা যায়নি।');
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
   const closeModal = () => {
     setIsCrudModalOpen(false);
     setEditingId(null);
@@ -1012,6 +1063,7 @@ export default function AdminDashboard() {
               { id: "reviews", name: "গ্রাহক রিভিউ", icon: Star },
               { id: "appointment", name: "অ্যাপয়েন্টমেন্ট", icon: ClipboardClock },
               { id: "gallery", name: "ফটো গ্যালারি", icon: Image },
+              { id: "change-password", name: "পাসওয়ার্ড পরিবর্তন", icon: KeyRound },
             ].map((item) => {
               const Icon = item.icon;
               return (
@@ -1069,6 +1121,7 @@ export default function AdminDashboard() {
               {activeTab === "reviews" && "গ্রাহক রিভিউ প্যানেল"}
               {activeTab === "appointment" && "Appointment Panel"}
               {activeTab === "gallery" && "ফটো গ্যালারি ম্যানেজমেন্ট"}
+              {activeTab === "change-password" && "পাসওয়ার্ড পরিবর্তন"}
             </h2>
           </div>
 
@@ -2624,6 +2677,93 @@ export default function AdminDashboard() {
                   {isSubmittingGallery ? "সেভ করা হচ্ছে..." : editingId ? "গ্যালারি আপডেট করুন" : "গ্যালারি সেভ করুন"}
                 </button>
               </form>
+            )}
+
+            {activeTab === "change-password" && (
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 max-w-md">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="p-2 bg-teal-50 text-teal-700 rounded-xl">
+                    <KeyRound className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-800">পাসওয়ার্ড পরিবর্তন</h2>
+                    <p className="text-[11px] text-slate-400">আপনার পাসওয়ার্ড আপডেট করুন।</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handlePasswordChange} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">বর্তমান পাসওয়ার্ড *</label>
+                    <div className="relative">
+                      <input
+                        type={showOldPassword ? 'text' : 'password'}
+                        required
+                        placeholder="বর্তমান পাসওয়ার্ড দিন"
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                        className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-teal-700 bg-slate-50 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowOldPassword(!showOldPassword)}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                      >
+                        {showOldPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">নতুন পাসওয়ার্ড *</label>
+                    <div className="relative">
+                      <input
+                        type={showNewPasswordState ? 'text' : 'password'}
+                        required
+                        placeholder="নতুন পাসওয়ার্ড দিন"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-teal-700 bg-slate-50 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPasswordState(!showNewPasswordState)}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                      >
+                        {showNewPasswordState ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">পাসওয়ার্ড কনফার্ম *</label>
+                    <div className="relative">
+                      <input
+                        type={showConfirmNewPassword ? 'text' : 'password'}
+                        required
+                        placeholder="নতুন পাসওয়ার্ড আবার দিন"
+                        value={confirmNewPassword}
+                        onChange={(e) => setConfirmNewPassword(e.target.value)}
+                        className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-teal-700 bg-slate-50 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                      >
+                        {showConfirmNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isChangingPassword}
+                    className="w-full py-2.5 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {isChangingPassword ? "পরিবর্তন হচ্ছে..." : "পাসওয়ার্ড পরিবর্তন করুন"}
+                  </button>
+                </form>
+              </div>
             )}
           </div>
         </div>
