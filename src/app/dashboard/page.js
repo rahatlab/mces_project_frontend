@@ -2079,6 +2079,93 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+
+          {activeTab === "change-password" && (
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 max-w-md">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="p-2 bg-teal-50 text-teal-700 rounded-xl">
+                  <KeyRound className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-800">পাসওয়ার্ড পরিবর্তন</h2>
+                  <p className="text-[11px] text-slate-400">আপনার পাসওয়ার্ড আপডেট করুন।</p>
+                </div>
+              </div>
+
+              <form onSubmit={handlePasswordChange} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">বর্তমান পাসওয়ার্ড *</label>
+                  <div className="relative">
+                    <input
+                      type={showOldPassword ? 'text' : 'password'}
+                      required
+                      placeholder="বর্তমান পাসওয়ার্ড দিন"
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-teal-700 bg-slate-50 pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowOldPassword(!showOldPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                    >
+                      {showOldPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">নতুন পাসওয়ার্ড *</label>
+                  <div className="relative">
+                    <input
+                      type={showNewPasswordState ? 'text' : 'password'}
+                      required
+                      placeholder="নতুন পাসওয়ার্ড দিন"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-teal-700 bg-slate-50 pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPasswordState(!showNewPasswordState)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                    >
+                      {showNewPasswordState ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">পাসওয়ার্ড কনফার্ম *</label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmNewPassword ? 'text' : 'password'}
+                      required
+                      placeholder="নতুন পাসওয়ার্ড আবার দিন"
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-teal-700 bg-slate-50 pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                    >
+                      {showConfirmNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isChangingPassword}
+                  className="w-full py-2.5 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {isChangingPassword ? "পরিবর্তন হচ্ছে..." : "পাসওয়ার্ড পরিবর্তন করুন"}
+                </button>
+              </form>
+            </div>
+          )}
         </div>
       </main>
 
@@ -2679,92 +2766,6 @@ export default function AdminDashboard() {
               </form>
             )}
 
-            {activeTab === "change-password" && (
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 max-w-md">
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2 bg-teal-50 text-teal-700 rounded-xl">
-                    <KeyRound className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-800">পাসওয়ার্ড পরিবর্তন</h2>
-                    <p className="text-[11px] text-slate-400">আপনার পাসওয়ার্ড আপডেট করুন।</p>
-                  </div>
-                </div>
-
-                <form onSubmit={handlePasswordChange} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">বর্তমান পাসওয়ার্ড *</label>
-                    <div className="relative">
-                      <input
-                        type={showOldPassword ? 'text' : 'password'}
-                        required
-                        placeholder="বর্তমান পাসওয়ার্ড দিন"
-                        value={oldPassword}
-                        onChange={(e) => setOldPassword(e.target.value)}
-                        className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-teal-700 bg-slate-50 pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowOldPassword(!showOldPassword)}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
-                      >
-                        {showOldPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">নতুন পাসওয়ার্ড *</label>
-                    <div className="relative">
-                      <input
-                        type={showNewPasswordState ? 'text' : 'password'}
-                        required
-                        placeholder="নতুন পাসওয়ার্ড দিন"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-teal-700 bg-slate-50 pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowNewPasswordState(!showNewPasswordState)}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
-                      >
-                        {showNewPasswordState ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">পাসওয়ার্ড কনফার্ম *</label>
-                    <div className="relative">
-                      <input
-                        type={showConfirmNewPassword ? 'text' : 'password'}
-                        required
-                        placeholder="নতুন পাসওয়ার্ড আবার দিন"
-                        value={confirmNewPassword}
-                        onChange={(e) => setConfirmNewPassword(e.target.value)}
-                        className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-teal-700 bg-slate-50 pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
-                      >
-                        {showConfirmNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={isChangingPassword}
-                    className="w-full py-2.5 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {isChangingPassword ? "পরিবর্তন হচ্ছে..." : "পাসওয়ার্ড পরিবর্তন করুন"}
-                  </button>
-                </form>
-              </div>
-            )}
           </div>
         </div>
       )}
